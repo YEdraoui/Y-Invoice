@@ -1,20 +1,52 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import SplashScreenComponent from './components/SplashScreen';
+import HomeScreen from './components/HomeScreen';
+import AddProduct from './components/AddProduct';
+import AddCustomer from './components/AddCustomer';
+import CreateInvoice from './components/CreateInvoice';
+
+const Stack = createStackNavigator();
 
 export default function App() {
+  const [products, setProducts] = useState([]); // Products state
+  const [customers, setCustomers] = useState([]); // Customers state
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Splash"
+        screenOptions={{
+          ...TransitionPresets.SlideFromRightIOS, // Smooth transition animations
+        }}
+      >
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreenComponent}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Products">
+          {(props) => (
+            <AddProduct {...props} products={products} setProducts={setProducts} />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="Customers">
+          {(props) => (
+            <AddCustomer {...props} customers={customers} setCustomers={setCustomers} />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="Invoices">
+          {(props) => (
+            <CreateInvoice {...props} products={products} customers={customers} />
+          )}
+        </Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
